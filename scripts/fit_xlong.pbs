@@ -1,0 +1,15 @@
+#!/bin/bash
+# $Id: fit_xlong.pbs 216 2013-07-24 18:15:22Z mushkar $
+
+#PBS -j oe
+#PBS -o fit.${PBS_JOBID}.log
+#PBS -V
+#PBS -l nodes=1:x86_64,walltime=96:00:00
+#PBS -m bea
+#PBS -q xlong
+
+export PATH=$PBS_O_PATH
+
+cd $dir
+
+Fit --param=$namepar.par > $namepar.log 2>&1

@@ -1,0 +1,56 @@
+#!/bin/bash
+# $Id: runComptonEFT 177 2013-07-02 15:11:30Z mushkar $
+
+if [ $# -lt 9 ]
+then
+  exit 1
+fi
+
+#
+Theta=$1
+E=$2 # in MeV
+E_in_GeV=`echo $E*0.001 | bc` # in GeV
+#
+alpha=$3
+beta=$4
+gE1E1=$5
+gM1M1=$6
+gE1M2=$7
+gM1E2=$8
+
+# tmp working dir
+dirout="/dev/shm/fit-tmp/$9"
+mkdir -p $dirout
+cd $dirout
+
+# Creating baryon.dat...
+cat > baryon.dat << EOF
+ &hadr exch=t,t,f,nq=-1,1,1,rm=0.9383,wid=0.,cutf=2.2,gstr=13.8,gem=0./
+ &hadr exch=f,f,f,nq=-1,1,1,rm=1.47,wid=.2,cutf=1.7,gstr=2.6,gem=-1./
+ &hadr exch=t,t,f,nq=1,3,3,rm=1.232,wid=0.12,cutf=2.6,gstr=0.36,gem=-1./
+ &hadr exch=f,f,f,nq=1,1,1,rm=1.555,wid=0.12,cutf=2.0,gstr=0.6,gem=-0.3/
+ &hadr exch=f,f,f,nq=-1,3,1,rm=1.525,wid=.2,cutf=1.7,gstr=0.8,gem=-0.3/
+ &hadr exch=f,f,f,nq=1,3,1,rm=1.820,wid=0.12,cutf=1.9,gstr=0.80,gem=-0.25/
+ &hadr exch=f,f,f,nq=-1,5,1,rm=1.67,wid=.2,cutf=1.4,gstr=2.2,gem=3./
+ &hadr exch=f,f,f,nq=-1,3,3,rm=1.700,wid=.2,cutf=0.,gstr=0.5,gem=-.25/
+EOF
+
+# Creating in.dat...
+cat > in.dat << EOF
+ \$energy Emin=${E_in_GeV},Emax=${E_in_GeV},Edel=1.,kvar=3/
+ \$angles thmin=$Theta,thmax=$Theta,thdel=1.,cmsangle=f/
+ \$incl anomaly=t,oneNloop=t,oneDloop=t,relchpt=t,loopoints=640/
+ \$Delta gaugeinv=t,dng1=2.97,dng2=-1.,dg1=4.2,dg2=4.0,dz1=0.1,dz2=2.25/
+ \$constants gA=1.27d0,fpi=0.09221d0,pi0mass=0.13498d0,pionm=0.13957/
+ \$nucleon hbchpt=f,born=t,nuclamm=t,onlyLEX=f/
+ \$multipoles pwa=f,jmax=3/
+ \$waytocompute feynrule=f/
+ \$isospin proton=t/
+ \$scalarPs alphaE1fm=$alpha,betaM1fm=$beta,varyscalarPs=f/
+ \$spinPs gamEEfm=$gE1E1,gamEMfm=$gE1M2,gamMEfm=$gM1E2,gamMMfm=$gM1M1/
+EOF
+
+# Running...
+ComptonEFT > ampl.log
+#
+exit 0

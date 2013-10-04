@@ -1,0 +1,13 @@
+# SVN: $Id: .rootrc 46 2012-12-07 02:21:19Z mushkar $
+#
+Unix.*.Root.DynamicPath:    .:$Fit/lib
+#
+Root.Html.OutputDir:   $Fit/htmldoc/
+#Root.Html.Homepage:
+#Root.Html.Header:
+#Root.Html.Footer:
+#Root.Html.Author:       // Author
+#Root.Html.LastUpdate: 	// Update
+#Root.Html.Copyright: 	// C
+#Root.Html.LastUpdate:  // @(#)
+Root.Html.Description: 	//_______________________

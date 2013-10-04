@@ -1,0 +1,44 @@
+#!/bin/bash
+# $Id$
+
+# Options
+th=$1	# photon lab energy in GeV
+elow=$2
+eup=$3
+estep=$4
+#
+apb=$5	# alpha + beta
+amb=$6	# alpha - beta
+ge1e1=$7 # gamma_e1e1
+gm1m1=$8 # gamma_m1m1
+ge1m2=$9 # gamma_e1m2
+gm1e2=${10} # gamma_m1e2
+
+# working dir
+dirout="/dev/shm/fit-tmp/${11}"
+if [[ ! -e  $dirout ]]
+then
+  cp -rp $Compton/fromPasquini/c/exe/compton $dirout
+fi
+cd $dirout
+rm *.dat
+
+# Run
+rcsdrtot_2011_main <<- EOF
+1
+2
+$apb
+$amb
+1
+$ge1m2
+$gm1m1
+$ge1e1
+$gm1e2
+$th
+$elow
+$eup
+$estep
+EOF
+
+# Output
+mv *.dat output.dat

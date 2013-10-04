@@ -1,0 +1,46 @@
+#!/bin/bash
+# $Id$
+
+# Options
+pol=$1	# which double pol. cross section to calculate
+e=$2	# photon lab energy in GeV
+thlow=$3
+thup=$4
+thstep=$5
+#
+apb=$6	# alpha + beta
+amb=$7	# alpha - beta
+ge1e1=$8 # gamma_e1e1
+gm1m1=$9 # gamma_m1m1
+ge1m2=${10} # gamma_e1m2
+gm1e2=${11} # gamma_m1e2
+
+# working dir
+dirout="/dev/shm/fit-tmp/${12}"
+if [[ ! -e  $dirout ]]
+then
+  cp -rp $Compton/fromPasquini/c/exe/compton $dirout
+fi
+cd $dirout
+rm *.dat
+
+# Run
+rcsdrtot_2011_main <<- EOF
+7
+2
+$apb
+$amb
+1
+$ge1m2
+$gm1m1
+$ge1e1
+$gm1e2
+$e
+$thlow
+$thup
+$thstep
+$pol
+EOF
+
+# Output
+mv *.dat output.dat
